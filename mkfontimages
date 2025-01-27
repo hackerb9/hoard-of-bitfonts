@@ -2,4 +2,4 @@
 
 IFS=$'\n'; find . \( -name windows -o -name pc-geos -o -name '*superpet-apl*' -o -name os-2 \) -prune -o -iname *draw -o -iname *yaff -print | while read; do dir=images/$(realpath --relative-to . $(dirname "$REPLY")); file=$(basename "$REPLY" .yaff); file=${file%.draw}; output="$dir/$file.png"; if [ ! -s "$output" ]; then echo "$REPLY" "$output"; mkdir -p "$dir"; monobit-convert "$REPLY" "$output"; fi; done
 
-IFS=$'\n'; find images -type d -print | while read dir; do find "$dir" -type f | ( while read image; do echo "<img src=\"$image\">"; done > "$dir/index.html" ); done
+IFS=$'\n'; find images -type d -print | while read dir; do find "$dir" -type f | ( echo "<html><body>"; while read image; do echo "<img src=\"$image\">"; done > "$dir/index.html"; echo "</body></html>";  ); done
