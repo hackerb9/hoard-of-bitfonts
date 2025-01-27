@@ -1,5 +1,9 @@
 #!/bin/bash
 
-IFS=$'\n'; find . \( -name windows -o -name pc-geos -o -name '*superpet-apl*' -o -name os-2 \) -prune -o -iname *draw -o -iname *yaff -print | while read; do dir=images/$(realpath --relative-to . $(dirname "$REPLY")); file=$(basename "$REPLY" .yaff); file=${file%.draw}; output="$dir/$file.png"; if [ ! -s "$output" ]; then echo "$REPLY" "$output"; mkdir -p "$dir"; monobit-convert "$REPLY" "$output"; fi; done
+relative() {
+    realpath --relative-to . "$1"
+}
 
-IFS=$'\n'; cd images; find . -type d -print | while read dir; do find "$dir" -type f | ( while read image; do echo "<img src=\"$image\">"; done > "$dir/index.html";  ); done
+IFS=$'\n'; find . \( -name windows -o -name pc-geos -o -name '*superpet-apl*' -o -name os-2 \) -prune -o -iname *draw -o -iname *yaff -print | while read; do dir=images/$(relative $(dirname "$REPLY")); file=$(basename "$REPLY" .yaff); file=${file%.draw}; output="$dir/$file.png"; if [ ! -s "$output" ]; then echo "$REPLY" "$output"; mkdir -p "$dir"; monobit-convert "$REPLY" "$output"; fi; done
+
+IFS=$'\n'; cd images; rm index.html; for dir in */; do ( dir=$(relative "$dir"); ( echo "<h2><a href=\"$dir\"</a></h2>"; ) >> index.html; ( cd "$dir"; find . -name '*png' | while read image; do image=$(relative "$image"); echo "<img  src=\"$image\">"; done ) | tee -a index.html > "$dir/index.html" ); done
