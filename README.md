@@ -14,4 +14,4 @@ The fonts in this repository are stored in [the human-friendly text-based YAFF f
 As such, the easiest way to view them is to open the text files directly. Alternatively, you can use
 [`monobit`](https://github.com/robhagemans/monobit) to render them to images or convert them to
 font formats supported by current operating systems. You can also
-[see the fonts as images here](http://hackerb9.github.io/hoard-of-bitfonts/).
+[see the fonts as images here](images).
