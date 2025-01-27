@@ -4,6 +4,6 @@ relative() {
     realpath --relative-to . "$1"
 }
 
-IFS=$'\n'; find . \( -name windows -o -name pc-geos -o -name '*superpet-apl*' -o -name os-2 -o -name amiga \) -prune -o -iname *draw -o -iname *yaff -print | while read; do dir=images/$(relative $(dirname "$REPLY")); file=$(basename "$REPLY" .yaff); file=${file%.draw}; output="$dir/$file.png"; if [ ! -s "$output" ]; then echo "$REPLY" "$output"; mkdir -p "$dir"; monobit-convert "$REPLY" "$output"; fi; done
+IFS=$'\n'; find . \( -name pc-geos -o -name '*superpet-apl*' -o -name os-2 -o -type d -a -name 'workbench-*.*' \) -prune -o -iname *draw -o -iname *yaff -print | while read; do dir=images/$(relative $(dirname "$REPLY")); file=$(basename "$REPLY" .yaff); file=${file%.draw}; output="$dir/$file.png"; if [[ ! -s "$output" || "$REPLY" -nt "$output" ]]; then rm "foo.png" 2>/dev/null; echo "$REPLY" "$output"; mkdir -p "$dir"; monobit-convert "$REPLY" "foo.png" && mv "foo.png" "$output" 2>/dev/null; fi; done
 
 IFS=$'\n'; cd images; rm index.html; for dir in */; do ( dir=$(relative "$dir"); ( echo "<h2><a href=\"$dir\"</a>$dir</h2>"; ) >> index.html; ( cd "$dir"; find . -name '*png' | while read image; do image=$(relative "$image"); echo "<h3>$image</h3><img src=\"/hoard-of-bitfonts/images/$dir/$image\">"; done ) | tee -a index.html > "$dir/index.html" ); done
